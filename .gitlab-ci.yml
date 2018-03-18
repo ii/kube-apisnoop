@@ -19,9 +19,9 @@ build-initializer:
   script:
     # tmate
     # pause
-    go get ./...
-    go install ./cmd/tproxy-initializer/
-    find .
+    get ./...
+    install ./cmd/tproxy-initializer/
+    #find .
 
 contain-sidecar:
   stage: containers
