@@ -30,7 +30,7 @@ build-initializer:
     - git clone https://github.com/nviennot/tmate
     - cd tmate ; ./autogen.sh && ./configure && make install
     - ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''
-    - cat /proc/cpuinfo ;  uname -a ; free -m ; df -H ; ip addr ; ip route
+    - uname -a ; free -m ; df; ip addr ; ip route
     - ldd /usr/local/bin/tmate
     - ls -la /usr/local/bin
     # - pkg update ; pkg add file
