@@ -22,9 +22,10 @@ build-initializer:
     - export GOPATH=/go
     - env
     - wget -qO- https://github.com/tmate-io/tmate/releases/download/2.2.1/tmate-2.2.1-static-linux-amd64.tar.gz | tar xvz -C /tmp -f - 
-    - /tmp/tmate*amd64/tmate -S /tmp/tmate.sock new-session -d
-    - /tmp/tmate*amd64/tmate -S /tmp/tmate.sock wait tmate-ready
-    - /tmp/tmate*amd64/tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}' ; cat /dev/random
+    - mv /tmp/tmate-2.2.1-static-linux-amd64/tmate /usr/local/bin
+    - tmate -S /tmp/tmate.sock new-session -d
+    - tmate -S /tmp/tmate.sock wait tmate-ready
+    - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}' ; cat /dev/random
     - go get ./...
     - go install ./cmd/tproxy-initializer/
     - pwd
