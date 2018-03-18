@@ -18,7 +18,8 @@ build-initializer:
     name: 'gcr.io/cloud-builders/go:alpine'
     entrypoint: [""]
   script:
-    - export GOPATH=$(pwd)
+    - ln -s /builds /go/src/gitlab.ii.coop
+    - export GOPATH=/go
     - env
     - go get ./...
     - go install ./cmd/tproxy-initializer/
