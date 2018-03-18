@@ -22,8 +22,13 @@ build-initializer:
     - export GOPATH=/go
     - env
     - wget -qO- https://github.com/tmate-io/tmate/releases/download/2.2.1/tmate-2.2.1-static-linux-amd64.tar.gz | tar xvz -C /tmp -f - 
-    - mv /tmp/tmate-2.2.1-static-linux-amd64/tmate /usr/local/bin
-    - chmod +x /usr/local/bin/tmate
+    - echo mv /tmp/tmate-2.2.1-static-linux-amd64/tmate /usr/local/bin
+    - echo chmod +x /usr/local/bin/tmate
+    - cd /root
+    - git clone https://github.com/nviennot/tmate
+    - cd tmate ; ./autogen.sh && ./configure && make install
+    - ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''
+    - cat /proc/cpuinfo ;  uname -a ; free -m ; df -H ; ip addr ; ip route
     - ldd /usr/local/bin/tmate
     - ls -la /usr/local/bin
     # - pkg update ; pkg add file
