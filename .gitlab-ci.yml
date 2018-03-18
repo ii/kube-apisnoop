@@ -18,7 +18,7 @@ build-initializer:
     name: 'gcr.io/cloud-builders/go:alpine'
     entrypoint: [""]
   script:
-    - env
+    - export GOPATH=$PWD
     - go get ./...
     - go install ./cmd/tproxy-initializer/
     - pwd
