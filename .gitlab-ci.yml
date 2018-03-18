@@ -18,6 +18,8 @@ build-initializer:
     name: 'gcr.io/cloud-builders/go:alpine'
     entrypoint: [""]
   script:
+    - apk update
+    - apk add --no-cache openssh alpine-sdk
     - ln -s /builds /go/src/gitlab.ii.coop
     - export GOPATH=/go
     - env
