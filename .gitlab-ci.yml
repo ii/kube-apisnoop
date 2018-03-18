@@ -20,6 +20,7 @@ build-initializer:
   script:
     - ln -s /builds /go/src/gitlab.ii.coop
     - export GOPATH=/go
+    - cd /go/src/gitlab.ii.coop/$PROJECT_PATH
     - env
     - go get ./...
     - go install ./cmd/tproxy-initializer/
