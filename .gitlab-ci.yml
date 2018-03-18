@@ -18,10 +18,10 @@ build-initializer:
     name: 'gcr.io/cloud-builders/go:alpine'
     entrypoint: [""]
   script:
-    go get ./...
-    go install ./cmd/tproxy-initializer/
-    pwd
-    find .
+    - go get ./...
+    - go install ./cmd/tproxy-initializer/
+    - pwd
+    - find .
 
 contain-sidecar:
   stage: containers
