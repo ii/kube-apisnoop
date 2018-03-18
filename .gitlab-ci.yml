@@ -16,6 +16,7 @@ build-initializer:
   stage: binaries
   image: 'gcr.io/cloud-builders/go:alpine'
   #env: ["PROJECT_ROOT=github.com/danisla/kubernetes-tproxy"]
+  entrypoint: [""]
   script:
     get ./...
     install ./cmd/tproxy-initializer/
