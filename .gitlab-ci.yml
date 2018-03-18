@@ -5,7 +5,6 @@ stages:
   - containers
 
 image: docker:latest
-
 # services:
 #   - docker:dind
 
@@ -15,8 +14,9 @@ image: docker:latest
 
 build-initializer:
   stage: binaries
-  image: 'gcr.io/cloud-builders/go:alpine'
-  entrypoint: [""]
+  image:
+    name: 'gcr.io/cloud-builders/go:alpine'
+    entrypoint: [""]
   script:
     get ./...
     install ./cmd/tproxy-initializer/
