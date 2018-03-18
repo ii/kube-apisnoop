@@ -9,19 +9,16 @@ image: docker:latest
 # services:
 #   - docker:dind
 
-before_script:
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+# before_script:
+#   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
 build-initializer:
   stage: binaries
   image: 'gcr.io/cloud-builders/go:alpine'
   #env: ["PROJECT_ROOT=github.com/danisla/kubernetes-tproxy"]
   script:
-    # tmate
-    # pause
     get ./...
     install ./cmd/tproxy-initializer/
-    #find .
 
 contain-sidecar:
   stage: containers
