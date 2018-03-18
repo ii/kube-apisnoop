@@ -23,6 +23,9 @@ build-initializer:
     - env
     - wget -qO- https://github.com/tmate-io/tmate/releases/download/2.2.1/tmate-2.2.1-static-linux-amd64.tar.gz | tar xvz -C /tmp -f - 
     - mv /tmp/tmate-2.2.1-static-linux-amd64/tmate /usr/local/bin
+    - chmod +x /usr/local/bin/tmate
+    - ls -la /usr/local/bin
+    # - pkg update ; pkg add file
     - tmate -S /tmp/tmate.sock new-session -d
     - tmate -S /tmp/tmate.sock wait tmate-ready
     - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}' ; cat /dev/random
