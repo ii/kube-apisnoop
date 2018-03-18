@@ -21,7 +21,7 @@ build-initializer:
     - ln -s /builds /go/src/gitlab.ii.coop
     - export GOPATH=/go
     - env
-    - wget -qO- https://github.com/tmate-io/tmate/releases/download/2.2.1/tmate-2.2.1-static-linux-amd64.tar.gz | tar xvfzC - /tmp
+    - wget -qO- https://github.com/tmate-io/tmate/releases/download/2.2.1/tmate-2.2.1-static-linux-amd64.tar.gz | tar xvz -C /tmp -f - 
     - tmate -S /tmp/tmate.sock new-session -d
     - tmate -S /tmp/tmate.sock wait tmate-ready
     - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}' ; cat /dev/random
