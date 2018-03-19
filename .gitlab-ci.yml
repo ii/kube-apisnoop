@@ -23,11 +23,11 @@ build-initializer:
     entrypoint: [""]
   script:
     #- apk add --no-cache openssh tmate
-    - echo set -g tmate-server-host pair.ii.coop > $HOME/.tmate.conf
-    - echo set -g tmate-server-port 22 > $HOME/.tmate.conf
-    - echo set -g tmate-server-rsa-fingerprint   "f9:af:d5:f2:47:8b:33:53:7b:fb:ba:81:ba:37:d3:b9" > $HOME/.tmate.conf
-    - set -g tmate-server-ecdsa-fingerprint   "32:44:b3:bb:b3:0a:b8:20:05:32:73:f4:9a:fd:ee:a8" > $HOME/.tmate.conf
-    - set -g tmate-identity "" > $HOME/.tmate.conf
+    - echo 'set -g tmate-server-host pair.ii.coop' > $HOME/.tmate.conf
+    - echo 'set -g tmate-server-port 22' >> $HOME/.tmate.conf
+    - echo 'set -g tmate-server-rsa-fingerprint   "f9:af:d5:f2:47:8b:33:53:7b:fb:ba:81:ba:37:d3:b9"' >> $HOME/.tmate.conf
+    - echo 'set -g tmate-server-ecdsa-fingerprint   "32:44:b3:bb:b3:0a:b8:20:05:32:73:f4:9a:fd:ee:a8"' >> $HOME/.tmate.conf
+    - echo 'set -g tmate-identity ""' >> $HOME/.tmate.conf
     - export CI_GITLAB_FQDN=$(echo $CI_PROJECT_URL | sed sXhttps\\://XX | sed sX\/.*\$XX)
     # TODO: copy source kubernetes-tproxy into /go/src/gitlab.ii.coop
     - ln -s /builds /go/src/$CI_GITLAB_FQDN
