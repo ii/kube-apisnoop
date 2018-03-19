@@ -38,9 +38,9 @@ build-initializer:
     - go install ./cmd/tproxy-initializer/
     - go install ./cmd/tproxy-podwatch/
     - cd /go/src/$CI_GITLAB_FQDN/$CI_PROJECT_PATH
-    - mkdir bin/
-    - cp /go/bin/tproxy-initializer bin/
-    - cp /go/bin/tproxy-podwatch bin/
+    - mkdir -p gopath/bin/
+    - cp /go/bin/tproxy-initializer gopath/bin/
+    - cp /go/bin/tproxy-podwatch gopath/bin/
     # - pwd
     # - find .
     # - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
@@ -58,8 +58,8 @@ build-initializer:
     # - sleep 99999999
   artifacts:
     paths:
-    - bin/tproxy-initializer
-    - bin/tproxy-podwatch
+    - gopath/bin/tproxy-initializer
+    - gopath/bin/tproxy-podwatch
 
 contain-sidecar:
   stage: containers
