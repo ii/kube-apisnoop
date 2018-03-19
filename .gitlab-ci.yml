@@ -71,3 +71,18 @@ podwatch-image:
     - docker build -f Dockerfile-podwatch --pull -t "$CI_REGISTRY_IMAGE/podwatch:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/podwatch:$CI_COMMIT_REF_SLUG"
 
+centos-example-image:
+  stage: images
+  script:
+    - cd examples/image-centos
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/example-app/centos:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/example-app/centos:$CI_COMMIT_REF_SLUG"
+
+debian-example-image:
+  stage: images
+  script:
+    - cd examples/image-centos
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/example-app/debian:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/example-app/debian:$CI_COMMIT_REF_SLUG"
