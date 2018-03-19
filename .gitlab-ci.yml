@@ -1,10 +1,10 @@
 stages:
   - binaries
-  - containers
+  - images
 
 image: docker:latest
 
-build-initializer:
+go-binaries:
   stage: binaries
   image:
     name: 'gcr.io/cloud-builders/go:alpine'
@@ -49,23 +49,23 @@ build-initializer:
     - gopath/bin/tproxy-initializer
     - gopath/bin/tproxy-podwatch
 
-contain-sidecar:
-  stage: containers
+sidecar-image:
+  stage: images
   script:
     - cd sidecar
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build --pull -t "$CI_REGISTRY_IMAGE/sidecar:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/sidecar:$CI_COMMIT_REF_SLUG"
 
-contain-initializer:
-  stage: containers
+initializer-image:
+  stage: images
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -f Dockerfile-initializer --pull -t "$CI_REGISTRY_IMAGE/initializer:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/initializer:$CI_COMMIT_REF_SLUG"
 
-contain-podwatch:
-  stage: containers
+podwatch-image:
+  stage: images
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - docker build -f Dockerfile-podwatch --pull -t "$CI_REGISTRY_IMAGE/podwatch:$CI_COMMIT_REF_SLUG" .
