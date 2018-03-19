@@ -22,7 +22,7 @@ build-initializer:
     name: 'gcr.io/cloud-builders/go:alpine'
     entrypoint: [""]
   script:
-    - export CI_GITLAB_FQDN=$(echo $CI_PROJECT_URL | sed s:https\\://:: | sed s:/.*$::)
+    - export CI_GITLAB_FQDN=$(echo $CI_PROJECT_URL | sed sXhttps\\://XX | sed sX/.*$XX)
     - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
     - cd /root
     - sleep 99999999
