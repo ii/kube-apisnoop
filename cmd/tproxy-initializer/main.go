@@ -137,7 +137,7 @@ func initializeDeployment(deployment *v1beta1.Deployment, c *config, clientset *
 		if initializerName == pendingInitializers[0].Name {
 			log.Printf("Initializing deployment: %s", deployment.Name)
 
-            initializedDeployment := deployment.DeepCopy()
+			initializedDeployment := deployment.DeepCopy()
 
 			// Remove self from the list of pending Initializers while preserving ordering.
 			if len(pendingInitializers) == 1 {
@@ -149,8 +149,9 @@ func initializeDeployment(deployment *v1beta1.Deployment, c *config, clientset *
 			if requireAnnotation {
 				a := deployment.ObjectMeta.GetAnnotations()
 				_, ok := a[annotation]
+				log.Printf("Deployment Annotation: '%s'", annotation)
 				if !ok {
-					log.Printf("Required '%s' annotation missing; skipping container injection", annotation)
+					log.Printf("Required '%s' deployment annotation missing; skipping container injection", annotation)
 					_, err := clientset.AppsV1beta1().Deployments(deployment.Namespace).Update(initializedDeployment)
 					if err != nil {
 						return err

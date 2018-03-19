@@ -1,5 +1,5 @@
 images:
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   mitmproxy: mitmproxy/mitmproxy:2.0.2
   tproxy_registry: registry.ii.coop/cncf/kubernetes-tproxy
   tproxy_initializer: initializer:kubesnoop
