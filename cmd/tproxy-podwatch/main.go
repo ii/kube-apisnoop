@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -236,17 +237,20 @@ func addFirewall(ip, comment string) error {
 
 	// Using "-w" arg to prevent concurrency issues in iptables.
 
-	// Port 443
-	cmd := exec.Command("iptables", "-w", "-t", "nat", "-A", "PREROUTING", "-s", ip, "-p", "tcp", "--dport", "443", "-j", "REDIRECT", "-m", "comment", "--comment", comment, "--to", hostPortString)
+	// Kubernetes API Server Port 443
+	cmd := exec.Command("iptables", "-w", "-t", "nat", "-I", "PREROUTING",
+		"-s", ip, "-p", "tcp", "-j", "REDIRECT",
+		"-d", os.Getenv("KUBERNETES_SERVICE_HOST"), "--dport", os.Getenv("KUBERNETES_SERVICE_PORT"),
+		"-m", "comment", "--comment", comment, "--to", hostPortString)
 	if err := cmd.Run(); err != nil {
 		return err
 	}
 
 	// Port 80
-	cmd = exec.Command("iptables", "-w", "-t", "nat", "-A", "PREROUTING", "-s", ip, "-p", "tcp", "--dport", "80", "-j", "REDIRECT", "-m", "comment", "--comment", comment, "--to", hostPortString)
-	if err := cmd.Run(); err != nil {
-		return err
-	}
+	// cmd = exec.Command("iptables", "-w", "-t", "nat", "-A", "PREROUTING", "-s", ip, "-p", "tcp", "--dport", "80", "-j", "REDIRECT", "-m", "comment", "--comment", comment, "--to", hostPortString)
+	// if err := cmd.Run(); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
