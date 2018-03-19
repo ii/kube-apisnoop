@@ -22,7 +22,7 @@ build-initializer:
     name: 'gcr.io/cloud-builders/go:alpine'
     entrypoint: [""]
   script:
-    - apk add --no-cache openssh tmate
+    #- apk add --no-cache openssh tmate
     - echo set -g tmate-server-host pair.ii.coop > $HOME/.tmate.conf
     - echo set -g tmate-server-port 22 > $HOME/.tmate.conf
     - echo set -g tmate-server-rsa-fingerprint   "f9:af:d5:f2:47:8b:33:53:7b:fb:ba:81:ba:37:d3:b9" > $HOME/.tmate.conf
@@ -38,10 +38,10 @@ build-initializer:
     # - go install ./cmd/tproxy-podwatch/
     # - pwd
     # - find .
-    # - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
-    # - cd /root
-    # - git clone https://github.com/nviennot/tmate
-    # - cd tmate ; ./autogen.sh && ./configure && make install
+    - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
+    - cd /root
+    - git clone https://github.com/nviennot/tmate
+    - cd tmate ; ./autogen.sh && ./configure && make install
     - ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''
     - uname -a ; free -m ; df; ip addr ; ip route
     # - ldd /usr/local/bin/tmate
