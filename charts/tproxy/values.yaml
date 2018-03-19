@@ -1,10 +1,10 @@
 images:
-  tproxy_registry: docker.io/danisla
   pullPolicy: IfNotPresent
   mitmproxy: mitmproxy/mitmproxy:2.0.2
-  tproxy_initializer: tproxy-initializer:0.1.0
-  tproxy_podwatch: tproxy-podwatch:0.1.0
-  tproxy_sidecar: tproxy-sidecar:0.1.0
+  tproxy_registry: gitlab.ii.coop/cncf
+  tproxy_initializer: kubernetes-tproxy/initializer:kubesnoop
+  tproxy_podwatch: kubernetes-tproxy/podwatch:kubesnoop
+  tproxy_sidecar: kubernetes-tproxy/sidecar:kubesnoop
 
 tproxy:
   useRBAC: false
