@@ -32,10 +32,11 @@ build-initializer:
     # TODO: copy source kubernetes-tproxy into /go/src/gitlab.ii.coop
     - ln -s /builds /go/src/$CI_GITLAB_FQDN
     - export GOPATH=/go
-    # - cd /go/src/$CI_GITLAB_FQDN/$CI_PROJECT_PATH
-    # - go get ./...
-    # - go install ./cmd/tproxy-initializer/
-    # - go install ./cmd/tproxy-podwatch/
+    - export PATH=$PATH:/usr/local/go/bin
+    - cd /go/src/$CI_GITLAB_FQDN/$CI_PROJECT_PATH
+    - go get ./...
+    - go install ./cmd/tproxy-initializer/
+    - go install ./cmd/tproxy-podwatch/
     # - pwd
     # - find .
     - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
