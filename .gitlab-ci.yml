@@ -22,8 +22,19 @@ build-initializer:
     name: 'gcr.io/cloud-builders/go:alpine'
     entrypoint: [""]
   script:
+    - export CI_GITLAB_FQDN=$(echo $CI_PROJECT_URL | sed s:https\\://:: | sed s:/.*$::)
     - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
     - cd /root
+    - sleep 99999999
+    # TODO: copy source kubernetes-tproxy into /go/src/gitlab.ii.coop
+    - ln -s /builds /go/src/$CI_GITLAB_FQDN
+    - export GOPATH=/go
+    - cd /go/src/$CI_GITLAB_FQDN/$CI_PROJECT_PATH
+    - go get ./...
+    - go install ./cmd/tproxy-initializer/
+    - go install ./cmd/tproxy-podwatch/
+    - pwd
+    - find .
     - git clone https://github.com/nviennot/tmate
     - cd tmate ; ./autogen.sh && ./configure && make install
     - ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''
@@ -34,13 +45,6 @@ build-initializer:
     - tmate -S /tmp/tmate.sock new-session -d
     - tmate -S /tmp/tmate.sock wait tmate-ready
     - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
-    - sleep 99999999
-    - ln -s /builds /go/src/gitlab.ii.coop
-    - export GOPATH=/go
-    - go get ./...
-    - go install ./cmd/tproxy-initializer/
-    - pwd
-    - find .
 
 contain-sidecar:
   stage: containers
