@@ -23,11 +23,11 @@ build-initializer:
     entrypoint: [""]
   script:
     #- apk add --no-cache openssh tmate
-    - echo 'set -g tmate-server-host pair.ii.coop' > $HOME/.tmate.conf
-    - echo 'set -g tmate-server-port 22' >> $HOME/.tmate.conf
-    - echo 'set -g tmate-server-rsa-fingerprint   "f9:af:d5:f2:47:8b:33:53:7b:fb:ba:81:ba:37:d3:b9"' >> $HOME/.tmate.conf
-    - echo 'set -g tmate-server-ecdsa-fingerprint   "32:44:b3:bb:b3:0a:b8:20:05:32:73:f4:9a:fd:ee:a8"' >> $HOME/.tmate.conf
-    - echo 'set -g tmate-identity ""' >> $HOME/.tmate.conf
+    # - echo 'set -g tmate-server-host pair.ii.coop' > $HOME/.tmate.conf
+    # - echo 'set -g tmate-server-port 22' >> $HOME/.tmate.conf
+    # - echo 'set -g tmate-server-rsa-fingerprint   "f9:af:d5:f2:47:8b:33:53:7b:fb:ba:81:ba:37:d3:b9"' >> $HOME/.tmate.conf
+    # - echo 'set -g tmate-server-ecdsa-fingerprint   "32:44:b3:bb:b3:0a:b8:20:05:32:73:f4:9a:fd:ee:a8"' >> $HOME/.tmate.conf
+    # - echo 'set -g tmate-identity ""' >> $HOME/.tmate.conf
     - export CI_GITLAB_FQDN=$(echo $CI_PROJECT_URL | sed sXhttps\\://XX | sed sX\/.*\$XX)
     # TODO: copy source kubernetes-tproxy into /go/src/gitlab.ii.coop
     - ln -s /builds /go/src/$CI_GITLAB_FQDN
@@ -37,22 +37,29 @@ build-initializer:
     - go get ./...
     - go install ./cmd/tproxy-initializer/
     - go install ./cmd/tproxy-podwatch/
+    - cd /go/src/$CI_GITLAB_FQDN/$CI_PROJECT_PATH
+    - mkdir bin/
+    - cp /go/bin/kubernetes-initializer bin/
+    - cp /go/bin/kubernetes-tproxy bin/
     # - pwd
     # - find .
-    - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
-    - cd /root
-    - git clone https://github.com/nviennot/tmate
-    - cd tmate ; ./autogen.sh && ./configure && make install
-    - ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''
-    - uname -a ; free -m ; df; ip addr ; ip route
+    # - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
+    # - cd /root
+    # - git clone https://github.com/nviennot/tmate
+    # - cd tmate ; ./autogen.sh && ./configure && make install
+    # - ssh-keygen -t rsa -f /root/.ssh/id_rsa -N ''
+    # - uname -a ; free -m ; df; ip addr ; ip route
     # - ldd /usr/local/bin/tmate
     # - ls -la /usr/local/bin
     # - pkg update ; pkg add file
-    - cd /go/src/$CI_GITLAB_FQDN/$CI_PROJECT_PATH
-    - tmate -S /tmp/tmate.sock new-session -d
-    - tmate -S /tmp/tmate.sock wait tmate-ready
-    - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
-    - sleep 99999999
+    # - tmate -S /tmp/tmate.sock new-session -d
+    # - tmate -S /tmp/tmate.sock wait tmate-ready
+    # - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+    # - sleep 99999999
+  artifacts:
+    paths:
+    - bin/kubernetes-initializer
+    - bin/kubernetes-podwatch
 
 contain-sidecar:
   stage: containers
