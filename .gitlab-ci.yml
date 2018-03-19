@@ -61,13 +61,13 @@ contain-initializer:
   stage: containers
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build -f Dockerfile-initializer --pull -t "tproxy-initializer:$CI_COMMIT_REF_SLUG" .
-    - docker push "tproxy-initializer:$CI_COMMIT_REF_SLUG"
+    - docker build -f Dockerfile-initializer --pull -t "$CI_REGISTRY_IMAGE/initializer:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/initializer:$CI_COMMIT_REF_SLUG"
 
 contain-podwatch:
   stage: containers
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build -f Dockerfile-podwatch --pull -t "tproxy-podwatch:$CI_COMMIT_REF_SLUG" .
-    - docker push "tproxy-podwatch:$CI_COMMIT_REF_SLUG"
+    - docker build -f Dockerfile-podwatch --pull -t "$CI_REGISTRY_IMAGE/podwatch:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/podwatch:$CI_COMMIT_REF_SLUG"
 
