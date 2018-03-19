@@ -1,10 +1,10 @@
 images:
   pullPolicy: IfNotPresent
   mitmproxy: mitmproxy/mitmproxy:2.0.2
-  tproxy_registry: gitlab.ii.coop/cncf
-  tproxy_initializer: kubernetes-tproxy/initializer:kubesnoop
-  tproxy_podwatch: kubernetes-tproxy/podwatch:kubesnoop
-  tproxy_sidecar: kubernetes-tproxy/sidecar:kubesnoop
+  tproxy_registry: registry.ii.coop/cncf/kubernetes-tproxy
+  tproxy_initializer: initializer:kubesnoop
+  tproxy_podwatch: podwatch:kubesnoop
+  tproxy_sidecar: sidecar:kubesnoop
 
 tproxy:
   useRBAC: false

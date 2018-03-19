@@ -1,6 +1,6 @@
-FROM alpine:3.6
+FROM alpine:3.7
 
-RUN apk add --update iptables curl bash
+RUN apk add --no-cache iptables curl bash
 
 COPY start.sh /start.sh
 

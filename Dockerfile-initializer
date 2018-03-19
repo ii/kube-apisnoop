@@ -1,3 +1,3 @@
-FROM alpine:3.6
+FROM alpine:3.7
 COPY gopath/bin/tproxy-initializer /tproxy-initializer
 ENTRYPOINT ["/tproxy-initializer"]
