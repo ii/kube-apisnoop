@@ -22,7 +22,8 @@ build-initializer:
     name: 'gcr.io/cloud-builders/go:alpine'
     entrypoint: [""]
   script:
-    #- apk add --no-cache openssh tmate
+    - apk add tmate --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
+    - apk add --no-cache openssh
     - echo 'set -g tmate-server-host pair.ii.coop' > $HOME/.tmate.conf
     - echo 'set -g tmate-server-port 22' >> $HOME/.tmate.conf
     - echo 'set -g tmate-server-rsa-fingerprint   "f9:af:d5:f2:47:8b:33:53:7b:fb:ba:81:ba:37:d3:b9"' >> $HOME/.tmate.conf

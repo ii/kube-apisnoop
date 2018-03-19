@@ -1,5 +1,3 @@
-// +k8s:deepcopy-gen=package,register
-// +k8s:deepcopy-gen=true
 // Copyright 2017 Google Inc. All Rights Reserved.
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
