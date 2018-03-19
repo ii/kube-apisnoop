@@ -24,6 +24,7 @@ build-initializer:
     - mkdir -p gopath/bin/
     - cp /go/bin/tproxy-initializer gopath/bin/
     - cp /go/bin/tproxy-podwatch gopath/bin/
+    - env
     # # Install tmate from alpine testing
     # - apk add tmate --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
     # - apk add --no-cache openssh
