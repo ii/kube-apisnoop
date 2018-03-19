@@ -32,7 +32,6 @@ build-initializer:
     # - go install ./cmd/tproxy-podwatch/
     # - pwd
     # - find .
-    # - sleep 99999999
     - apk add --no-cache openssh alpine-sdk automake autoconf libevent-dev ncurses-dev msgpack-c-dev libssh-dev
     - cd /root
     - git clone https://github.com/nviennot/tmate
@@ -46,6 +45,7 @@ build-initializer:
     - tmate -S /tmp/tmate.sock new-session -d
     - tmate -S /tmp/tmate.sock wait tmate-ready
     - tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}'
+    - sleep 99999999
 
 contain-sidecar:
   stage: containers
