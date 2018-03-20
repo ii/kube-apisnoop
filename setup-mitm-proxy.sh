@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INSTALL_NAME=tproxy
-ACCOUNT_NAME="${INSTALL_NAME}-mitm}"
+ACCOUNT_NAME="${INSTALL_NAME}-mitm"
 ACCOUNT_SECRET_NAME="${ACCOUNT_NAME}-secret"
 
 cd charts/tproxy
@@ -16,6 +16,9 @@ MITMPROXY_CERT=$(cat ./certs/mitmproxy-ca-cert.pem | base64 -w 0)
 echo "Installing tproxy using helm...."
 helm install -n $INSTALL_NAME --set tproxy.useInitializer=true --set tproxy.accountName="$ACCOUNT_NAME" --set tproxy.accountSecretName="$ACCOUNT_SECRET_NAME" .
 cd -
+
+# Wait a second
+sleep 1
 
 # One liner to get the secrets, patch the CA, then apply changes
 kubectl get secrets/$ACCOUNT_SECRET_NAME -o yaml | sed "s/ca.crt:.\+/ca.crt: $MITMPROXY_CERT/" | kubectl apply -f -
