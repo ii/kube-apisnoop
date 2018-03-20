@@ -1,0 +1,33 @@
+[ req ]
+default_bits = 2048
+prompt = no
+default_md = sha256
+req_extensions = req_ext
+distinguished_name = dn
+
+[ dn ]
+C = NZ
+ST = Auckland
+L = Auckland
+O = ii
+OU = ci
+CN = 35.189.30.145
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = kubernetes
+DNS.2 = kubernetes.default
+DNS.3 = kubernetes.default.svc
+DNS.4 = kubernetes.default.svc.cluster
+DNS.5 = kubernetes.default.svc.cluster.local
+IP.1 = 35.189.30.145
+IP.2 = 10.19.240.1
+
+[ v3_ext ]
+authorityKeyIdentifier=keyid,issuer:always
+basicConstraints=critical,CA:TRUE
+keyUsage=critical,keyEncipherment,dataEncipherment,keyCertSign
+extendedKeyUsage=serverAuth,clientAuth
+subjectAltName=@alt_names
