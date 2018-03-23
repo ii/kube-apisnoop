@@ -84,7 +84,7 @@ spec:
               hostPort: {{ .Values.tproxy.hostPort }}
               protocol: TCP
           command:
-            - mitmdump
+            - mitmweb
             - '-v'
             - '-p'
             - '{{ .Values.tproxy.hostPort }}'
