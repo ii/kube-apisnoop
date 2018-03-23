@@ -6,7 +6,7 @@ ACCOUNT_SECRET_NAME="${ACCOUNT_NAME}-secret"
 
 cd charts/tproxy
 # if certificates havent been created yet, create them
-if [ ! -d "$(pwd)/certs" ]; then 
+if [ ! -d "$(pwd)/certs" ]; then
     echo "Certs not found, creating certs"
     docker run --rm -v ${PWD}/certs/:/home/mitmproxy/.mitmproxy mitmproxy/mitmproxy >/dev/null 2>&1
 fi
