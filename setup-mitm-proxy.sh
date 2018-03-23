@@ -21,6 +21,6 @@ cd -
 sleep 1
 
 # One liner to get the secrets, patch the CA, then apply changes
-kubectl get secrets/$ACCOUNT_SECRET_NAME -o yaml | sed "s/ca.crt:.\+/ca.crt: $MITMPROXY_CERT/" | kubectl apply -f -
+# kubectl get secrets/$ACCOUNT_SECRET_NAME -o yaml | sed "s/ca.crt:.\+/ca.crt: $MITMPROXY_CERT/" | kubectl apply -f -
 
 kubectl logs -l app=tproxy -c tproxy-podwatch &
