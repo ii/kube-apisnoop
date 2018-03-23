@@ -85,14 +85,16 @@ spec:
               protocol: TCP
           command:
             - mitmdump
+            - '-v'
             - '-p'
             - '{{ .Values.tproxy.hostPort }}'
-            - '-T'
-            - '--host'
-            - '--insecure'
-            - '--stream'
-            - '4096'
-            - '--cert'
+            - '--mode'
+            - 'transparent'
+            - '--showhost'
+            - '--ssl-insecure'
+            - '--set'
+            - 'stream_large_bodies=4096'
+            - '--certs'
             - '*=/opt/mitmproxy-scripts/mitm-kube-apiserver.pem'
             - '-s'
             - /opt/mitmproxy-scripts/mitm-script.py
