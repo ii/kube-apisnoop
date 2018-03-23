@@ -1,6 +1,7 @@
 #!/bin/bash
 
-CSR_NAME=k8s-mitm-2.ii
+SERIAL=`date '+%Y%m%d.%H%M%S'`
+CSR_NAME="k8s-mitm-${SERIAL}.ii"
 
 mkdir -p fakecerts
 cd fakecerts
