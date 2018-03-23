@@ -31,3 +31,9 @@ basicConstraints=critical,CA:TRUE
 keyUsage=critical,keyEncipherment,dataEncipherment,keyCertSign
 extendedKeyUsage=serverAuth,clientAuth
 subjectAltName=@alt_names
+
+[ v3_ca ]
+subjectKeyIdentifier=hash
+authorityKeyIdentifier=keyid:always,issuer:always
+basicConstraints = CA:true
+

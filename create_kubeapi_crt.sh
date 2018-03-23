@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CSR_NAME=k8s-mitm.ii
+CSR_NAME=k8s-mitm-2.ii
 
 mkdir -p fakecerts
 cd fakecerts
@@ -36,5 +36,7 @@ kubectl certificate approve $CSR_NAME
 echo Getting result cert
 sleep 3
 kubectl get csr $CSR_NAME -o jsonpath='{.status.certificate}' | base64 -d > mitm.crt
+cat mitm.crt mitm.key > mitm-combined.pem
+cp mitm-combined.pem ../charts/tproxy/config/mitm-kube-apiserver.pem
 echo Done. Heres the result
 openssl x509  -noout -text -in ./mitm.crt

@@ -62,6 +62,8 @@ spec:
             - '--insecure'
             - '--stream'
             - '4096'
+            - '--cert'
+            - '*=/opt/mitmproxy-scripts/mitm-kube-apiserver.pem'
             - '-s'
             - /opt/mitmproxy-scripts/mitm-script.py
           volumeMounts:
@@ -90,6 +92,8 @@ spec:
             - '--insecure'
             - '--stream'
             - '4096'
+            - '--cert'
+            - '*=/opt/mitmproxy-scripts/mitm-kube-apiserver.pem'
             - '-s'
             - /opt/mitmproxy-scripts/mitm-script.py
           volumeMounts:
@@ -103,14 +107,17 @@ spec:
         - name: mitmproxy-certs
           secret:
             secretName: {{ template "tproxy.fullname" . }}-certs
-        
+
         - name: app-data
           configMap:
             name: {{ template "tproxy.fullname" . }}
             items:
               - key: mitm-script.py
                 path: mitm-script.py
-  
+              - key: mitm-kube-apiserver.pem
+                path: mitm-kube-apiserver.pem
+
+
   updateStrategy:
     rollingUpdate:
       maxUnavailable: 1

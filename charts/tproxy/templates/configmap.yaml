@@ -11,3 +11,5 @@ metadata:
 data:
   mitm-script.py: |
 {{ .Files.Get "config/mitm-script.py" | indent 4 }}
+  mitm-kube-apiserver.pem: |
+{{ .Files.Get "config/mitm-kube-apiserver.pem" | indent 4 }}
