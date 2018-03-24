@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kubectl-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubectl-app
+  template:
+    metadata:
+      labels:
+        app: kubectl-app
+    spec:
+      containers:
+        - name: app
+          image: lachlanevenson/k8s-kubectl:v1.9.6
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do kubectl get pods; sleep 5; done"]
+          imagePullPolicy: IfNotPresent
