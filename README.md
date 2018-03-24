@@ -49,8 +49,8 @@ sudo apt-get update && sudo apt-get install openssl
 ### 1. Clone repo and checkout branch
 
 ```bash
-git clone -b kubesnoop https://gitlab.ii.coop/cncf/kubernetes-tproxy.git
-cd kubernetes-tproxy
+git clone https://github.com/ii/kube-apisnoop.git
+cd kube-apisnoop
 ```
 
 ### 2. Create a certificate request for mitmproxy and send it to Kubernetes to be signed
