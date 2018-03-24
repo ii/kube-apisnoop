@@ -1,116 +1,168 @@
-# Kubernetes Transparent Proxy
+# kube-apisnoop
 
-Transparent proxy and filtering for Kubernetes pods.
+Transparent proxy that observes the Kubernetes API server requests of pods and addons.
 
-This project provides transparent proxy to pods using two deployment scenarios:
+Based on kubernetes-tproxy - https://github.com/danisla/kubernetes-tproxy
 
-1. On any K8S cluster with manual addition of the init container.
-2. A K8S 1.7+ cluster with deployment annotations and initializers to inject the init container.
+**N.B. This is currently being worked on and is subject to change**
 
-The init container is responsible for adding the firewall rules to redirect outbound http/s traffic to the proxy server.
+## Requirements
 
-See the Helm chart [README.md](./charts/tproxy/README.md) for all chart configuration options.
+- **Kubernetes** - with **Initializers enabled (alpha feature)** (Tested on GKE v1.9.3-gke.0) 
+    - Self-hosted - https://kubernetes.io/docs/admin/extensible-admission-controllers/#enable-initializers-alpha-feature
+    - On GKE - https://cloud.google.com/kubernetes-engine/docs/concepts/alpha-clusters - For example:
 
-Technology used:
-
-- [Kubernetes Initializers](https://kubernetes.io/docs/admin/extensible-admission-controllers/#what-are-initializers)
-- [Kubernetes Controllers](https://github.com/kubernetes/community/blob/master/contributors/devel/controllers.md)
-- [Kubernetes RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
-- [mitmproxy](https://mitmproxy.org/)
-- [Kubernetes Helm](https://github.com/kubernetes/helm)
-- [Google Container Engine](https://cloud.google.com/container-engine/)
-
-## Deploying without initializers
-
-Kubernetes Initializers are in alpha as of 1.7. This section shows how to deploy and use the transparent proxy on a K8S 1.6 cluster.
-
-**Figure 1.** *tproxy diagram*
-
-<img src="./tproxy_diagram.png" width="800px"></img>
-
-1. Install the helm chart:
-
-```sh
-cd charts/tproxy
-helm install -n tproxy .
-cd -
-```
-
-2. Run the example app:
-
-```sh
-kubectl apply -f examples/debian-locked-manual.yaml
-```
-
-3. Inspect the logs:
-
-```sh
-kubectl logs --selector=app=debian-app,variant=locked --tail=4
-```
-
-Example output:
-
-```
-https://www.google.com: 418
-https://storage.googleapis.com/solutions-public-assets/: 200
-PING www.google.com (209.85.200.147): 56 data bytes
-ping: sending packet: Operation not permitted
-```
-
-## Deploying with Initializers
-
-Using the Kubernetes Initializer simplifies the runtime configuration. The initializer automatically intercepts deployments with the annotation: "initializer.kubernetes.io/tproxy": "true"` and adds the init container to the deployment.
-
-**Figure 1.** *tproxy with initializers diagram*
-
-<img src="./tproxy_initializers_diagram.png" width="800px"></img>
-
-1. Create an alpha GKE cluster with initializer support:
-
-```sh
+```bash
 gcloud container clusters create tproxy-example \
   --zone us-central1-f \
   --machine-type n1-standard-1 \
   --num-nodes 3 \
   --enable-kubernetes-alpha \
-  --cluster-version 1.7.6
+  --cluster-version 1.9.3
 ```
 
-> NOTE: Run `gcloud container get-server-config --zone us-central1-f` to see all cluster versions.
+- **Helm**
 
-2. Install Helm:
-
-```sh
-curl -sL https://storage.googleapis.com/kubernetes-helm/helm-v2.5.1-linux-amd64.tar.gz | tar -zxvf - && sudo mv linux-amd64/helm /usr/local/bin/ && rm -Rf linux-amd64
-
+```bash
+curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
 helm init
 ```
 
-3. Install the Helm Chart:
+- **Kubectl**
 
-```sh
-cd charts/tproxy
-helm install -n tproxy --set tproxy.useInitializer=true .
-cd -
+```bash
+curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.9.6/bin/linux/amd64/kubectl
+chmod +x kubectl
+sudo mv ./kubectl /usr/local/bin/
 ```
 
-4. Deploy the example app that uses the annotation:
+- **Docker** - see https://docs.docker.com/install/
+- **OpenSSL**
 
-```sh
-kubectl create -f examples/debian-locked.yaml
+```bash
+sudo apt-get update && sudo apt-get install openssl
 ```
 
-5. Inspect the logs:
 
-```sh
-kubectl logs --selector=app=debian-app,variant=locked --tail=4
+## Setup proxy pods and initializer
+
+### 1. Clone repo and checkout branch
+
+```bash
+git clone -b kubesnoop https://gitlab.ii.coop/cncf/kubernetes-tproxy.git
+cd kubernetes-tproxy
 ```
 
-Example output:
+### 2. Create a certificate request for mitmproxy and send it to Kubernetes to be signed
+
+```bash
+./create_kubeapi_crt.sh
+```
+
+**Output:**
 
 ```
-https://www.google.com: 418
-https://storage.googleapis.com/solutions-public-assets/: 200
-PING www.google.com (209.85.200.147): 56 data bytes
-ping: sending packet: Operation not permitted
+Generating key
+Generating RSA private key, 2048 bit long modulus
+[...]
+Generating k8s-ca.pem
+Generating csr request
+Adding CSR to Kubernetes
+certificatesigningrequest "k8s-mitm-20180323.222453.ii" created
+Approving CSR
+certificatesigningrequest "k8s-mitm-20180323.222453.ii" approved
+Getting result cert
+Done. Heres the result
+[...]
+```
+
+### 3. Install the proxy pods and initializer using helm
+```
+./setup-mitm-proxy.sh
+```
+
+**Output:**
+
+```
+Installing tproxy using helm....
+NAME:   tproxy
+LAST DEPLOYED: [...]
+NAMESPACE: default
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ConfigMap
+NAME                       DATA  AGE
+tproxy-tproxy              2     4s
+tproxy-tproxy-initializer  1     4s
+tproxy-tproxy-root-certs   1     4s
+[...]
+```
+
+## Example deployment
+
+Deploy examples/kubectl-app.yaml to test things out. This deployment repeatedly calls `kubectl get pods` every 5 seconds.
+
+```bash
+kubectl apply -f examples/kubectl-app.yaml
+```
+
+Find out which node the deployed pod is running on:
+
+```bash
+./list_pod_nodes.sh
+```
+
+**Example output:**
+
+```
+POD                          NODE
+kubectl-app-c7556b7f4-lj8px  gke-loomio-ii-nz-default-pool-b70b968b-xj55
+tproxy-tproxy-cbgsb          gke-loomio-ii-nz-default-pool-b70b968b-xj55
+tproxy-tproxy-scmxq          gke-loomio-ii-nz-default-pool-b70b968b-q5t7
+```
+
+Work out which tproxy pod is on the same node as the pod you just deployed. 
+In this case, the pod **kubectl-app-c7556b7f4-lj8px** is on the same node as the tproxy pod **tproxy-tproxy-cbgsb**. Your pod names will be different.
+
+Port forward the web interface on the chosen tproxy pod - (in this case it is **tproxy-tproxy-cbgsb**)
+
+```bash
+kubectl port-forward tproxy-tproxy-cbgsb 9000:8081
+```
+
+Go to the website http://127.0.0.1:9000 for the mitmproxy web interface.
+
+<img src="./docs/images/mitmweb-empty.png" width="800px"></img>
+
+Notice how there are no logging events showing in mitmweb. You can get the logs of the example pod by:
+
+```
+kubectl logs kubectl-app-c7556b7f4-lj8px --tail=20
+```
+
+Now activate logging by annotating the pod:
+
+```
+kubectl annotate pod kubectl-app-c7556b7f4-lj8px  initializer.kubernetes.io/tproxy=true --overwrite
+```
+
+You will now see the kubectl api requests logged in mitmweb.
+
+<img src="./docs/images/mitmweb-entries.png" width="800px"></img>
+
+## Tag your own deployments
+
+To observe the API server traffic for a pod, add the following to its spec:
+
+```yaml
+metadata:
+  annotations:
+    "initializer.kubernetes.io/tproxy": "true"
+```
+
+Or alternatively, use the following command to annotate an already deployed pod:
+
+```bash
+kubectl annotate pod your-pod initializer.kubernetes.io/tproxy=true
 ```
