@@ -4,13 +4,17 @@ Transparent proxy that observes the Kubernetes API server requests of pods and a
 
 Based on kubernetes-tproxy - https://github.com/danisla/kubernetes-tproxy
 
-**N.B. This is currently being worked on and is subject to change**
+**N.B. This is currently in its very early stages and is subject to change **
 
 ## Requirements
 
-- **Kubernetes** - with **Initializers enabled (alpha feature)** (Tested on GKE v1.9.3-gke.0) 
-    - Self-hosted - https://kubernetes.io/docs/admin/extensible-admission-controllers/#enable-initializers-alpha-feature
-    - On GKE - https://cloud.google.com/kubernetes-engine/docs/concepts/alpha-clusters - For example:
+- **Kubernetes** 
+    - with **Initializers enabled (alpha feature)** (Tested on GKE v1.9.3-gke.0) 
+        - Self-hosted - https://kubernetes.io/docs/admin/extensible-admission-controllers/#enable-initializers-alpha-feature
+        - On GKE - https://cloud.google.com/kubernetes-engine/docs/concepts/alpha-clusters
+    - with **RBAC disabled (currently)** 
+        - On GKE - enable legacy authorization
+    - For example, on GKE:
 
 ```bash
 gcloud container clusters create tproxy-example \
@@ -18,6 +22,7 @@ gcloud container clusters create tproxy-example \
   --machine-type n1-standard-1 \
   --num-nodes 3 \
   --enable-kubernetes-alpha \
+  --enable-legacy-authorization \
   --cluster-version 1.9.3
 ```
 
@@ -45,6 +50,42 @@ sudo apt-get update && sudo apt-get install openssl
 
 
 ## Setup proxy pods and initializer
+
+### TLDR
+
+Run the following code:
+
+```bash
+# Prerequisites:                                                                                                                                
+# - An active kubernetes cluster with alpha features and legacy authentication enabled   
+# Get the code                                                                                                                                  
+git clone https://github.com/ii/kube-apisnoop.git kube-apisnoop
+cd kube-apisnoop/
+# Make sure Helm is installed                                                                                                                   
+helm init --wait
+# Create a cert sign request with apiserver DNS and IPs, send to Kubernetes CA to sign                                                          
+./create_kubeapi_crt.sh
+# Setup a mitmproxy-based pod per node to intercept traffic                                                                                     
+./setup-mitm-proxy.sh
+# Next deploy an example app that makes apiserver requests using kubectl                                                                        
+kubectl apply -f examples/kubectl-app.yaml
+# Figure out which node's mitmproxy pod needs to be port forwarded so that intercepted requests can be seen.                                    
+./list_pod_nodes.sh
+export APP_NODE=$(./list_pod_nodes.sh | grep "^kubectl-app" | awk '{print $2}')
+export APP_POD=$(./list_pod_nodes.sh | grep "^kubectl-app" | awk '{print $1}')
+export TPROXY_POD=$(./list_pod_nodes.sh | grep "^tproxy-.\+$APP_NODE" | awk '{print $1}')
+# Port forward the tproxy pod so we can access it locally                                                                                       
+kubectl port-forward $TPROXY_POD 9000:8081 | grep -v "^Handling" &
+sleep 2
+# Open the web interface to mitmproxy in the default browser                                                                                    
+[[ $OSTYPE == linux* ]] && xdg-open http://127.0.0.1:9000
+[[ $OSTYPE == darwin* ]] && open http://127.0.0.1:9000
+# Apply the annotation to the example pod so that the traffic is intercepted                                                                    
+sleep 1
+kubectl annotate pod $APP_POD  initializer.kubernetes.io/tproxy=true
+kubectl logs $APP_POD  -f --tail=4
+```
+
 
 ### 1. Clone repo and checkout branch
 
