@@ -1,7 +1,7 @@
 images:
   pullPolicy: Always
   mitmproxy: mitmproxy/mitmproxy:3.0.3
-  tproxy_registry: registry.ii.coop/cncf/kubernetes-tproxy
+  tproxy_registry: registry.ii.coop/cncf/kube-apisnoop
   tproxy_initializer: initializer:kubesnoop
   tproxy_podwatch: podwatch:kubesnoop
   tproxy_sidecar: sidecar:kubesnoop
