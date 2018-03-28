@@ -1,3 +1,12 @@
+Kube-apisnoop is a prototype for an MITM based approach that generates k8s API usage allowing us to test addon conformance and prioritize the order that tests should be written.
+
+-  We'd like to map the k8s addons/e2e API requests against the OpenAPI/Swagger definition, including recording invalid/alpha/beta calls.
+-  We are transparently proxying k8s API traffic though mitmproxy using an Initializer that modifies iptables and obtains a valid API server cert via k8s CSRs.
+-  It's a short step from here to begin writing the inline api coverage tool
+-  [High Level Spec for API Coverage Proxy](https://docs.google.com/document/d/1pJAneNJvivUP-J0HL5mLFRjpler-vQSrz1iGRvh_xVg/edit)
+-  We should be able to group API calls by pod/container
+-  Generating addon API usage logs will allow us to prioritize the order that tests are written. 
+
 # kube-apisnoop
 
 Transparent proxy that observes the Kubernetes API server requests of pods and addons.
