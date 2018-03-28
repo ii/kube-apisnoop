@@ -207,3 +207,9 @@ Or alternatively, use the following command to annotate an already deployed pod:
 ```bash
 kubectl annotate pod your-pod initializer.kubernetes.io/tproxy=true
 ```
+
+## Technical architecture
+
+### From https://github.com/danisla/kubernetes-tproxy
+
+<img src="./tproxy_initializers_diagram.png" width="800px"></img>
