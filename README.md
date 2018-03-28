@@ -6,6 +6,8 @@ Based on kubernetes-tproxy - https://github.com/danisla/kubernetes-tproxy
 
 **N.B. This is currently in its very early stages and is subject to change **
 
+<img src="./docs/images/mitmweb-entries.png" width="800px"></img>
+
 ## Requirements
 
 - **Kubernetes** 
@@ -86,6 +88,7 @@ kubectl annotate pod $APP_POD  initializer.kubernetes.io/tproxy=true
 kubectl logs $APP_POD  -f --tail=4
 ```
 
+## Step by step with output
 
 ### 1. Clone repo and checkout branch
 
